@@ -4,17 +4,23 @@ import Navbar from "./components/Navbar";
 import Footers from "./components/Footers";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 
 const App = () => {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/Login" element={<Login />} />
-      </Routes>
-      <Footers />
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="flex-grow"></div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Signup" element={<Signup />} />
+        </Routes>
+        <div/>
+        <Footers />
+      </div>
     </Router>
   );
 };
