@@ -17,7 +17,7 @@ mongoose
 
 // Default Route
 app.get("/", (req, res) => {
-  res.send("Welcome to the NoDelex Backend!");
+  res.send("Welcome to the Easygebeya Backend!");
 });
 
 // Start the server
