@@ -1,13 +1,9 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'http://localhost:5000/api' });
+const API_URL = 'http://localhost:5000/api'; // Update with your backend URL if it's different
 
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-  return req;
+const axiosInstance = axios.create({
+  baseURL: API_URL,
 });
 
-export default API;
+export default axiosInstance;
