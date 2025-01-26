@@ -1,11 +1,10 @@
-import React from "react";
+import React from "react"; 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footers from "./components/Footers";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
 
 const App = () => {
   return (
@@ -18,7 +17,7 @@ const App = () => {
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
         </Routes>
-        <div/>
+        <div />
         <Footers />
       </div>
     </Router>
