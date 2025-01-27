@@ -5,7 +5,7 @@ const propertySchema = new mongoose.Schema({
   description: { type: String, required: true },
   price: { type: Number, required: true },
   location: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
+  imageUrl: { type: String }, // Field to store the uploaded image path
 });
 
 module.exports = mongoose.model("Property", propertySchema);
