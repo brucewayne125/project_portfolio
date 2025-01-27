@@ -1,23 +1,13 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-white text-xl font-bold">EasyGebeya</h1>
-        <div className="flex space-x-4">
-          <Link to="/" className="text-gray-300 hover:text-white">
-            Home
-          </Link>
-          <Link to="/login" className="text-gray-300 hover:text-white">
-            Login
-          </Link>
-          <Link to="/signup" className="text-gray-300 hover:text-white">
-            Signup
-          </Link>
-        </div>
-      </div>
+    <nav className="flex items-center justify-between px-4 py-2 bg-blue-600 text-white">
+      <Link to="/">Home</Link>
+      <Link to="/add-property">Add Property</Link>
+      <Link to="/add-vehicle">Add Vehicle</Link>
+      <Link to="/login">Login</Link>
+      <Link to="/signup">Signup</Link>
     </nav>
   );
 };

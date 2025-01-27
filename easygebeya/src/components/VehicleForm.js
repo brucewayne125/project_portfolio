@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 const VehicleForm = () => {
   const [formData, setFormData] = useState({
@@ -7,129 +6,75 @@ const VehicleForm = () => {
     description: "",
     price: "",
     type: "",
+    image: null, // For file upload
   });
-  const [image, setImage] = useState(null); // State for the image
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(""); // Clear previous messages
 
-    // Create FormData to send the file
-    const data = new FormData();
-    data.append("title", formData.title);
-    data.append("description", formData.description);
-    data.append("price", formData.price);
-    data.append("type", formData.type);
-    if (image) {
-      data.append("image", image);
+    const data = new FormData(); // Create FormData object for file upload
+    for (let key in formData) {
+      data.append(key, formData[key]);
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/vehicles", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await fetch("http://localhost:5000/api/vehicles", {
+        method: "POST",
+        body: data,
       });
-      setSuccessMessage("Vehicle added successfully!");
-      setErrorMessage("");
-      setFormData({ title: "", description: "", price: "", type: "" });
-      setImage(null);
-    } catch (err) {
-      setErrorMessage(err.response?.data?.message || "Error adding vehicle.");
-      setSuccessMessage("");
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add vehicle.");
+      }
+
+      const result = await response.json();
+      console.log("Success:", result);
+      setMessage("Vehicle added successfully!");
+      setFormData({ title: "", description: "", price: "", type: "", image: null }); // Reset form
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage(error.message || "Failed to submit the form.");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Add a New Vehicle</h1>
-      {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
-      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="title" className="block font-medium mb-2">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className="w-full border border-gray-300 p-2 rounded-md"
-            required
-          />
+    <div>
+      <h2>Add a New Vehicle</h2>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div>
+          <label>Title:</label>
+          <input type="text" name="title" value={formData.title} onChange={handleChange} required />
         </div>
-        <div className="mb-4">
-          <label htmlFor="description" className="block font-medium mb-2">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="w-full border border-gray-300 p-2 rounded-md"
-            required
-          />
+        <div>
+          <label>Description:</label>
+          <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
         </div>
-        <div className="mb-4">
-          <label htmlFor="price" className="block font-medium mb-2">
-            Price
-          </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleInputChange}
-            className="w-full border border-gray-300 p-2 rounded-md"
-            required
-          />
+        <div>
+          <label>Price:</label>
+          <input type="number" name="price" value={formData.price} onChange={handleChange} required />
         </div>
-        <div className="mb-4">
-          <label htmlFor="type" className="block font-medium mb-2">
-            Type
-          </label>
-          <input
-            type="text"
-            id="type"
-            name="type"
-            value={formData.type}
-            onChange={handleInputChange}
-            className="w-full border border-gray-300 p-2 rounded-md"
-            required
-          />
+        <div>
+          <label>Type:</label>
+          <input type="text" name="type" value={formData.type} onChange={handleChange} required />
         </div>
-        <div className="mb-4">
-          <label htmlFor="image" className="block font-medium mb-2">
-            Image
-          </label>
-          <input
-            type="file"
-            id="image"
-            onChange={handleImageChange}
-            className="w-full"
-            accept="image/*"
-          />
+        <div>
+          <label>Image:</label>
+          <input type="file" name="image" onChange={handleChange} required />
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-        >
-          Submit
-        </button>
+        <button type="submit">Submit</button>
       </form>
+      {message && <p>{message}</p>}
     </div>
   );
 };

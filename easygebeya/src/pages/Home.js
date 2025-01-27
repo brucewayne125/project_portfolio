@@ -1,45 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
-    // Fetch properties data
-    axios.get('http://localhost:5000/api/properties')
-      .then((response) => {
-        setProperties(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the properties!", error);
-      });
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/properties");
+        const data = await response.json();
+        setProperties(data);
+      } catch (err) {
+        console.error("Error fetching properties:", err);
+      }
+    };
 
-    // Fetch vehicles data
-    axios.get('http://localhost:5000/api/vehicles')
-      .then((response) => {
-        setVehicles(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the vehicles!", error);
-      });
+    fetchProperties();
   }, []);
 
   return (
     <div>
       <h1>Properties</h1>
-      <ul>
+      <div>
         {properties.map((property) => (
-          <li key={property._id}>{property.title}</li>
+          <div key={property._id}>
+            <h3>{property.title}</h3>
+            <p>{property.description}</p>
+            <p>Price: ${property.price}</p>
+            <p>Location: {property.location}</p>
+            {/* Render the image */}
+            {property.image && (
+              <img
+                src={property.image}
+                alt={property.title}
+                style={{ width: "200px", height: "auto" }}
+              />
+            )}
+          </div>
         ))}
-      </ul>
-
-      <h1>Vehicles</h1>
-      <ul>
-        {vehicles.map((vehicle) => (
-          <li key={vehicle._id}>{vehicle.title}</li>
-        ))}
-      </ul>
+      </div>
     </div>
   );
 };
